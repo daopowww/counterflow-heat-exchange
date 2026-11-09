@@ -1,0 +1,18 @@
+name: heat-exchange
+
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: heat_exchange
+      POSTGRES_USER: heat_user
+      POSTGRES_PASSWORD: heat_password
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heat_user -d heat_exchange"]
+
+volumes:
+  pg_data:
