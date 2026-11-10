@@ -27,3 +27,5 @@ export const calculationVariantInputSchema = z.object({
 });
 
 export type CalculationVariantInputType = z.infer<typeof calculationVariantInputSchema>;
+
+export const calculationInputSchema = calculationVariantInputSchema.omit({ name: true });

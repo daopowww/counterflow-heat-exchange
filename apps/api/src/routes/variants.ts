@@ -8,7 +8,7 @@ export const variantsRouter = express.Router();
 variantsRouter.get("/", async (request, response) => {
   const variants = await prisma.calculationVariant.findMany();
 
-  return response.json({ variants });
+  return response.status(200).json({ variants });
 });
 
 variantsRouter.get("/:id", async (request, response) => {
