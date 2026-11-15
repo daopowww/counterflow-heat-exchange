@@ -15,6 +15,7 @@ import { Spinner } from "@/components/ui/spinner.tsx";
 
 export const CalculationParametersSheet = () => {
   const status = useCalculationPoints((s) => s.status);
+  const calculationInputs = useCalculationPoints((s) => s.calculationInputs);
 
   return (
     <Sheet>

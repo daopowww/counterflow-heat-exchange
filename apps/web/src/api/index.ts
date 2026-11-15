@@ -1,5 +1,5 @@
 import { FormValues } from "@/components/calculation/CalculationParametersForm";
-import { calculationResponse } from "@/schemas";
+import { CalculationPostResponse, calculationResponse } from "@/schemas";
 
 export const calculateVariant = async (data: FormValues) => {
   const response = await fetch("api/calculation", {
@@ -23,4 +23,20 @@ export const calculateVariant = async (data: FormValues) => {
   }
 
   return parsedResult.data;
+};
+
+export const saveVariant = async (data: CalculationPostResponse) => {
+  const response = await fetch("api/variants", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Ошибка HTTP: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
 };

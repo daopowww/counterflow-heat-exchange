@@ -75,8 +75,26 @@ export const calculationResponse = z.object({
   summary: calculationSummary,
 });
 
+export type CalculationResponse = z.infer<typeof calculationResponse>;
+
 export const calculationLocalStorage = z.output(calculationFormSchema);
 
 export type CalculationLocalStorage = z.infer<typeof calculationLocalStorage>;
 
-export type CalculationResponse = z.infer<typeof calculationResponse>;
+export const calculationInputs = z.output(calculationFormSchema);
+
+export type CalculationInputs = z.infer<typeof calculationInputs>;
+
+export const variantFormSchema = z.object({
+  name: z.string().trim().min(1),
+});
+
+export type VariantFormType = z.infer<typeof variantFormSchema>;
+
+export const calculationPostRequest = z.output(calculationFormSchema).and(
+  z.object({
+    name: z.string().trim().min(1, "Введите название варианта"),
+  }),
+);
+
+export type CalculationPostResponse = z.infer<typeof calculationPostRequest>;

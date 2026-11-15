@@ -11,17 +11,21 @@ export const router = createBrowserRouter([
     path: "/",
     element: <CalculationPage />,
     loader: async () => {
-      const { runCalculationPoints } = useCalculationPoints.getState();
+      try {
+        const { runCalculationPoints } = useCalculationPoints.getState();
 
-      const storageFormData = getStorageData(
-        "form-data",
-        calculationLocalStorage,
-        null,
-      );
+        const storageFormData = getStorageData(
+          "form-data",
+          calculationLocalStorage,
+          null,
+        );
 
-      if (storageFormData === null) return;
+        if (storageFormData === null) return;
 
-      await runCalculationPoints(storageFormData);
+        await runCalculationPoints(storageFormData);
+      } catch (e) {
+        return null;
+      }
     },
     hydrateFallbackElement: <CalculationPageSkeleton />,
   },

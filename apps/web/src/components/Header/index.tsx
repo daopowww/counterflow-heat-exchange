@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button.tsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card.tsx";
 import { CalculationParametersSheet } from "@/components/calculation/CalculationParametersSheet";
+import { SaveVariantSheet } from "@/components/variant/SaveVariantSheet";
 
 export const Header = () => {
   return (
@@ -15,7 +15,7 @@ export const Header = () => {
         <CardContent className="px-0">
           <div className="flex items-center gap-4">
             <CalculationParametersSheet />
-            <Button size="lg">Сохранить вариант</Button>
+            <SaveVariantSheet />
           </div>
         </CardContent>
       </Card>

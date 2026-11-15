@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { calculationFormSchema, calculationLocalStorage } from "@/schemas";
-import { calculateVariant } from "@/api";
 import { useCalculationPoints } from "@/stores/calculationStore.ts";
 import { getStorageData, setStorageData } from "@/lib/utils.ts";
 import { useEffect } from "react";
+import { toast } from "@/components/ui/toast.tsx";
 
 export type FormValues = z.infer<typeof calculationFormSchema>;
 
@@ -25,8 +25,12 @@ const defaultValues: z.input<typeof calculationFormSchema> = {
 };
 
 export const CalculationParametersForm = () => {
-  const setCalculationPoints = useCalculationPoints(
+  const runCalculationPoints = useCalculationPoints(
     (s) => s.runCalculationPoints,
+  );
+  const status = useCalculationPoints((s) => s.status);
+  const setCalculationInputs = useCalculationPoints(
+    (s) => s.setCalculationInputs,
   );
 
   const { handleSubmit, control, reset } = useForm<
@@ -51,8 +55,21 @@ export const CalculationParametersForm = () => {
   }, [reset]);
 
   const onSubmit = async (data: FormValues) => {
-    await setCalculationPoints(data);
-    setStorageData("form-data", data, calculationLocalStorage);
+    try {
+      const response = await runCalculationPoints(data);
+      toast.add({
+        type: "success",
+        description: "Расчёт выполнен.",
+      });
+    } catch (error) {
+      toast.add({
+        type: "error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Не удалось выполнить расчёт.",
+      });
+    }
   };
 
   return (
