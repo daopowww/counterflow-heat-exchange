@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button.tsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card.tsx";
-import { CalculationParametersSheet } from "@/components/CalculationParametersSheet";
+import { CalculationParametersSheet } from "@/components/calculation/CalculationParametersSheet";
 
 export const Header = () => {
   return (

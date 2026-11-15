@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
-import { CalculationSection } from "@/components/CalculationSection";
 import { Sidebar } from "@/components/Sidebar";
+import { CalculationContent } from "@/components/calculation/CalculationContent";
 
 export const CalculationPage = () => {
   return (
@@ -8,7 +8,7 @@ export const CalculationPage = () => {
       <Sidebar />
       <div className="min-w-0 flex-1 flex flex-col gap-8">
         <Header />
-        <CalculationSection />
+        <CalculationContent />
       </div>
     </main>
   );

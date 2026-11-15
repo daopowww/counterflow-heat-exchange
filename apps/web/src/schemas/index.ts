@@ -52,3 +52,31 @@ export const calculationFormSchema = z.object({
       .positive("Число должно быть положительным"),
   ),
 });
+
+export const calculationPoint = z.object({
+  depth: z.number(),
+  materialTemperature: z.number(),
+  gasTemperature: z.number(),
+  temperatureDifference: z.number(),
+});
+
+export type CalculationPoint = z.infer<typeof calculationPoint>;
+
+export const calculationSummary = z.object({
+  materialOutletTemperature: z.number(),
+  gasOutletTemperature: z.number(),
+  heatFlowKw: z.number(),
+});
+
+export type CalculationSummary = z.infer<typeof calculationSummary>;
+
+export const calculationResponse = z.object({
+  points: calculationPoint.array(),
+  summary: calculationSummary,
+});
+
+export const calculationLocalStorage = z.output(calculationFormSchema);
+
+export type CalculationLocalStorage = z.infer<typeof calculationLocalStorage>;
+
+export type CalculationResponse = z.infer<typeof calculationResponse>;

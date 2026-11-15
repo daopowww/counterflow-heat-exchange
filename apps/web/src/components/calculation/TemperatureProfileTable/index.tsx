@@ -7,10 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx";
-import { mockCalculationPoints } from "@/data/mockCalculationPoints.ts";
 import { Card, CardContent } from "@/components/ui/card.tsx";
+import { useCalculationPoints } from "@/stores/calculationStore.ts";
 
 export const TemperatureProfileTable = () => {
+  const calculationPoints = useCalculationPoints((f) => f.calculationPoints);
+
+  if (calculationPoints === null) {
+    return <p>Введите параметры и выполните расчёт.</p>;
+  }
+
   return (
     <Card>
       <CardContent>
@@ -27,12 +33,12 @@ export const TemperatureProfileTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockCalculationPoints.map((point) => (
+            {calculationPoints?.map((point) => (
               <TableRow key={point.depth}>
                 <TableCell>{point.depth}</TableCell>
-                <TableCell>{point.materialTemperature}</TableCell>
-                <TableCell>{point.gasTemperature}</TableCell>
-                <TableCell>{point.temperatureDifference}</TableCell>
+                <TableCell>{point.materialTemperature.toFixed(2)}</TableCell>
+                <TableCell>{point.gasTemperature.toFixed(2)}</TableCell>
+                <TableCell>{point.temperatureDifference.toFixed(2)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

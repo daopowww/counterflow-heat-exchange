@@ -6,12 +6,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/components/ui/sheet.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { CalculationParametersForm } from "@/components/CalculationParametersForm";
+import { CalculationParametersForm } from "@/components/calculation/CalculationParametersForm";
 import { Calculator } from "lucide-react";
+import { useCalculationPoints } from "@/stores/calculationStore.ts";
+import { Spinner } from "@/components/ui/spinner.tsx";
 
 export const CalculationParametersSheet = () => {
+  const status = useCalculationPoints((s) => s.status);
+
   return (
     <Sheet>
       <SheetTrigger
@@ -32,15 +36,24 @@ export const CalculationParametersSheet = () => {
             type="submit"
             form="form-calculation-parameters"
             size="lg"
+            disabled={status === "loading"}
           >
             <Calculator />
-            Рассчитать
+            {status === "loading" ? (
+              <div className="flex flex-row gap-2 items-center">
+                <span>Считаем...</span>
+                <Spinner />
+              </div>
+            ) : (
+              <span>Рассчитать</span>
+            )}
           </Button>
           <Button
             type="reset"
             variant="outline"
             form="form-calculation-parameters"
             size="lg"
+            disabled={status === "loading"}
           >
             Сбросить
           </Button>

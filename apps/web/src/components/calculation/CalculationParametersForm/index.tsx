@@ -3,9 +3,13 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { calculationFormSchema } from "@/schemas";
+import { calculationFormSchema, calculationLocalStorage } from "@/schemas";
+import { calculateVariant } from "@/api";
+import { useCalculationPoints } from "@/stores/calculationStore.ts";
+import { getStorageData, setStorageData } from "@/lib/utils.ts";
+import { useEffect } from "react";
 
-type FormValues = z.infer<typeof calculationFormSchema>;
+export type FormValues = z.infer<typeof calculationFormSchema>;
 
 const defaultValues: z.input<typeof calculationFormSchema> = {
   apparatusDiameter: "",
@@ -21,6 +25,10 @@ const defaultValues: z.input<typeof calculationFormSchema> = {
 };
 
 export const CalculationParametersForm = () => {
+  const setCalculationPoints = useCalculationPoints(
+    (s) => s.runCalculationPoints,
+  );
+
   const { handleSubmit, control, reset } = useForm<
     z.input<typeof calculationFormSchema>,
     unknown,
@@ -30,8 +38,21 @@ export const CalculationParametersForm = () => {
     defaultValues,
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  useEffect(() => {
+    const formData = getStorageData("form-data", calculationLocalStorage, null);
+
+    if (formData === null) return;
+
+    const parsedFormData = Object.fromEntries(
+      Object.entries(formData).map(([key, value]) => [key, String(value)]),
+    );
+
+    reset(parsedFormData);
+  }, [reset]);
+
+  const onSubmit = async (data: FormValues) => {
+    await setCalculationPoints(data);
+    setStorageData("form-data", data, calculationLocalStorage);
   };
 
   return (
@@ -41,7 +62,8 @@ export const CalculationParametersForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       onReset={(event) => {
         event.preventDefault();
-        reset();
+        reset(defaultValues);
+        localStorage.removeItem("form-data");
       }}
     >
       <Controller
@@ -57,8 +79,8 @@ export const CalculationParametersForm = () => {
               className="h-9"
               id="form-bed-height"
               placeholder="Например, 6"
-              type="number"
               aria-invalid={fieldState.invalid}
+              type="number"
             />
             {fieldState.invalid && (
               <FieldError className="text-xs" errors={[fieldState.error]} />
@@ -287,7 +309,7 @@ export const CalculationParametersForm = () => {
               {...field}
               className="h-9"
               id="form-interval-count"
-              placeholder="Например, 60"
+              placeholder="Например, 6"
               aria-invalid={fieldState.invalid}
               type="number"
             />
