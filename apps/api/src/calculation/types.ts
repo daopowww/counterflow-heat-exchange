@@ -1,12 +1,10 @@
-import { type CalculationVariantInputType } from "../schemas/index.js";
+import type {
+  CalculationRequest,
+  CalculationPoint,
+} from "@counterflow/contracts";
 
-export type CalculationInput = Omit<CalculationVariantInputType, "name">;
-export type CalculationResult = {
-  depth: number;
-  materialTemperature: number;
-  gasTemperature: number;
-  temperatureDifference: number;
-};
+export type CalculationInput = CalculationRequest;
+export type CalculationResult = CalculationPoint;
 export type Coefficients = {
   crossSectionArea: number;
   gasVolumetricFlow: number;
