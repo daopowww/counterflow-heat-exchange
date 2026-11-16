@@ -17,7 +17,14 @@ const serializeVariant = (variant: CalculationVariant): Variant => ({
 });
 
 variantsRouter.get("/", async (request, response) => {
-  const variants = await prisma.calculationVariant.findMany();
+  const userId = request.session.userId;
+
+  if (userId === undefined)
+    return response.status(401).json({ error: "Необходимо войти" });
+
+  const variants = await prisma.calculationVariant.findMany({
+    where: { userId },
+  });
 
   const result: VariantsResponse = {
     variants: variants.map(serializeVariant),
@@ -27,6 +34,11 @@ variantsRouter.get("/", async (request, response) => {
 });
 
 variantsRouter.get("/:id", async (request, response) => {
+  const userId = request.session.userId;
+
+  if (userId === undefined)
+    return response.status(401).json({ error: "Необходимо войти" });
+
   const parseId = z.coerce
     .number("Параметр должен быть числом")
     .int("Число должно быть целым")
@@ -38,7 +50,7 @@ variantsRouter.get("/:id", async (request, response) => {
   }
 
   const variant = await prisma.calculationVariant.findUnique({
-    where: { id: parseId.data },
+    where: { id: parseId.data, userId },
   });
 
   if (!variant)
@@ -50,6 +62,12 @@ variantsRouter.get("/:id", async (request, response) => {
 });
 
 variantsRouter.post("/", async (request, response) => {
+  const userId = request.session.userId;
+
+  if (userId === undefined) {
+    return response.status(401).json({ error: "Необходимо войти" });
+  }
+
   const parseResult = createVariantRequestSchema.safeParse(request.body);
 
   if (!parseResult.success) {
@@ -57,7 +75,10 @@ variantsRouter.post("/", async (request, response) => {
   }
 
   const variant = await prisma.calculationVariant.create({
-    data: parseResult.data,
+    data: {
+      ...parseResult.data,
+      userId,
+    },
   });
 
   const result: VariantResponse = { variant: serializeVariant(variant) };

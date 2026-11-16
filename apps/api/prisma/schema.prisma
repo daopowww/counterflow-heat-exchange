@@ -26,4 +26,13 @@ model CalculationVariant {
   apparatusDiameter                 Float
   intervalCount                     Int
   createdAt                         DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  login String @unique
+  passwordHash String
+  variants CalculationVariant[]
 }
