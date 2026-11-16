@@ -5,7 +5,6 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { calculationFormSchema, calculationLocalStorage } from "@/schemas";
 import { useCalculationPoints } from "@/stores/calculationStore.ts";
-import { getStorageData, setStorageData } from "@/lib/utils.ts";
 import { useEffect } from "react";
 import { toast } from "@/components/ui/toast.tsx";
 
@@ -28,10 +27,7 @@ export const CalculationParametersForm = () => {
   const runCalculationPoints = useCalculationPoints(
     (s) => s.runCalculationPoints,
   );
-  const status = useCalculationPoints((s) => s.status);
-  const setCalculationInputs = useCalculationPoints(
-    (s) => s.setCalculationInputs,
-  );
+  const calculationInputs = useCalculationPoints((s) => s.calculationInputs);
 
   const { handleSubmit, control, reset } = useForm<
     z.input<typeof calculationFormSchema>,
@@ -43,16 +39,20 @@ export const CalculationParametersForm = () => {
   });
 
   useEffect(() => {
-    const formData = getStorageData("form-data", calculationLocalStorage, null);
-
-    if (formData === null) return;
+    if (calculationInputs === null) {
+      reset(defaultValues);
+      return;
+    }
 
     const parsedFormData = Object.fromEntries(
-      Object.entries(formData).map(([key, value]) => [key, String(value)]),
+      Object.entries(calculationInputs).map(([key, value]) => [
+        key,
+        String(value),
+      ]),
     );
 
     reset(parsedFormData);
-  }, [reset]);
+  }, [reset, calculationInputs]);
 
   const onSubmit = async (data: FormValues) => {
     try {

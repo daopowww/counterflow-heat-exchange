@@ -1,14 +1,29 @@
 import { prisma } from "../lib/prisma.js";
-import { calculationVariantInputSchema } from "../schemas/index.js";
+import { createVariantRequestSchema } from "../schemas/index.js";
+import type {
+  Variant,
+  VariantResponse,
+  VariantsResponse,
+} from "@counterflow/contracts";
+import type { CalculationVariant } from "../generated/prisma/client.js";
 import z from "zod";
 import express from "express";
 
 export const variantsRouter = express.Router();
 
+const serializeVariant = (variant: CalculationVariant): Variant => ({
+  ...variant,
+  createdAt: variant.createdAt.toISOString(),
+});
+
 variantsRouter.get("/", async (request, response) => {
   const variants = await prisma.calculationVariant.findMany();
 
-  return response.status(200).json({ variants });
+  const result: VariantsResponse = {
+    variants: variants.map(serializeVariant),
+  };
+
+  return response.status(200).json(result);
 });
 
 variantsRouter.get("/:id", async (request, response) => {
@@ -22,15 +37,20 @@ variantsRouter.get("/:id", async (request, response) => {
     return response.status(400).json({ errors: parseId.error.issues });
   }
 
-  const variant = await prisma.calculationVariant.findUnique({ where: { id: parseId.data } });
+  const variant = await prisma.calculationVariant.findUnique({
+    where: { id: parseId.data },
+  });
 
-  if (!variant) return response.status(404).json({ error: "Вариант не найден" });
+  if (!variant)
+    return response.status(404).json({ error: "Вариант не найден" });
 
-  return response.status(200).json({ variant });
+  const result: VariantResponse = { variant: serializeVariant(variant) };
+
+  return response.status(200).json(result);
 });
 
 variantsRouter.post("/", async (request, response) => {
-  const parseResult = calculationVariantInputSchema.safeParse(request.body);
+  const parseResult = createVariantRequestSchema.safeParse(request.body);
 
   if (!parseResult.success) {
     return response.status(400).json({ errors: parseResult.error.issues });
@@ -40,5 +60,7 @@ variantsRouter.post("/", async (request, response) => {
     data: parseResult.data,
   });
 
-  return response.status(201).json({ variant });
+  const result: VariantResponse = { variant: serializeVariant(variant) };
+
+  return response.status(201).json(result);
 });

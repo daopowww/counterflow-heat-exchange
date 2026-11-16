@@ -1,9 +1,10 @@
 import { CalculationInput, CalculationResult } from "./types.js";
+import type { CalculationSummary } from "@counterflow/contracts";
 
 export const calculateSummary = (
   input: CalculationInput,
   points: CalculationResult[],
-) => {
+): CalculationSummary => {
   const firstPoint = points[0];
   const lastPoint = points.at(-1);
 

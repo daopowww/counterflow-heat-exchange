@@ -41,17 +41,25 @@ export const TemperatureProfileChart = () => {
           >
             <CartesianGrid vertical={false} />
             <XAxis
+              padding={{ left: 12, right: 12 }}
               dataKey="depth"
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => value.toFixed(1)}
+              tickMargin={8}
+            />
+            <YAxis
+              padding={{ top: 12 }}
+              type="number"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={(label) => <label>Глубина {label}</label>}
+                  labelFormatter={(label) => `Глубина: ${label.toFixed(1)}`}
                 />
               }
             />

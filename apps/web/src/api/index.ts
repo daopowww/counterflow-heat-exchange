@@ -1,8 +1,18 @@
-import { FormValues } from "@/components/calculation/CalculationParametersForm";
-import { CalculationPostResponse, calculationResponse } from "@/schemas";
+import {
+  calculationResponseSchema,
+  variantResponseSchema,
+  variantsResponseSchema,
+  type CalculationRequest,
+  type CalculationResponse,
+  type CreateVariantRequest,
+  type VariantResponse,
+  type VariantsResponse,
+} from "@counterflow/contracts";
 
-export const calculateVariant = async (data: FormValues) => {
-  const response = await fetch("api/calculation", {
+export const calculateVariant = async (
+  data: CalculationRequest,
+): Promise<CalculationResponse> => {
+  const response = await fetch("/api/calculation", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,9 +24,8 @@ export const calculateVariant = async (data: FormValues) => {
     throw new Error(response.statusText);
   }
 
-  const rawData = await response.json();
-
-  const parsedResult = calculationResponse.safeParse(rawData);
+  const rawData: unknown = await response.json();
+  const parsedResult = calculationResponseSchema.safeParse(rawData);
 
   if (!parsedResult.success) {
     throw new Error("Сервер вернул некорректные данные расчёта");
@@ -25,8 +34,10 @@ export const calculateVariant = async (data: FormValues) => {
   return parsedResult.data;
 };
 
-export const saveVariant = async (data: CalculationPostResponse) => {
-  const response = await fetch("api/variants", {
+export const saveVariant = async (
+  data: CreateVariantRequest,
+): Promise<VariantResponse> => {
+  const response = await fetch("/api/variants", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,5 +49,37 @@ export const saveVariant = async (data: CalculationPostResponse) => {
     throw new Error(`Ошибка HTTP: ${response.status} ${response.statusText}`);
   }
 
-  return response.json();
+  const rawData: unknown = await response.json();
+  return variantResponseSchema.parse(rawData);
+};
+
+export const getVariants = async (): Promise<VariantsResponse> => {
+  const response = await fetch("/api/variants", {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Ошибка HTTP: ${response.status} ${response.statusText}`);
+  }
+
+  const rawData: unknown = await response.json();
+  return variantsResponseSchema.parse(rawData);
+};
+
+export const getVariantById = async (id: string): Promise<VariantResponse> => {
+  const response = await fetch(`/api/variants/${id}`, {
+    method: "GET",
+  });
+
+  if (response.status === 404) {
+    throw new Error("Вариант не найден");
+  }
+
+  if (!response.ok) {
+    throw new Error("Не удалось загрузить вариант. Попробуйте позже");
+  }
+
+  const rawData: unknown = await response.json();
+
+  return variantResponseSchema.parse(rawData);
 };

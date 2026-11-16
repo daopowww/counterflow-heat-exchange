@@ -7,7 +7,7 @@ export const Sidebar = () => {
         <ul className="flex flex-col gap-6">
           <li>
             <NavLink
-              to="/"
+              to="/calculate"
               className={({ isActive }) =>
                 `flex flex-col items-center gap-2 rounded-2xl px-2 py-3 text-center text-xs transition-colors ${
                   isActive

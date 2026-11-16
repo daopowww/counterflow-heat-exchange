@@ -35,7 +35,7 @@ export const TemperatureProfileTable = () => {
           <TableBody>
             {calculationPoints?.map((point) => (
               <TableRow key={point.depth}>
-                <TableCell>{point.depth}</TableCell>
+                <TableCell>{point.depth.toFixed(2)}</TableCell>
                 <TableCell>{point.materialTemperature.toFixed(2)}</TableCell>
                 <TableCell>{point.gasTemperature.toFixed(2)}</TableCell>
                 <TableCell>{point.temperatureDifference.toFixed(2)}</TableCell>

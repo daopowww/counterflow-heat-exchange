@@ -1,9 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
-import {
-  calculationPostRequest,
-  variantFormSchema,
-  VariantFormType,
-} from "@/schemas";
+import { variantFormSchema, VariantFormType } from "@/schemas";
+import { createVariantRequestSchema } from "@counterflow/contracts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -32,7 +29,7 @@ export const SaveVariantForm = ({
   const calculationInputs = useCalculationPoints((s) => s.calculationInputs);
 
   const onSubmit = async (data: VariantFormType) => {
-    const parsedData = calculationPostRequest.safeParse({
+    const parsedData = createVariantRequestSchema.safeParse({
       name: data.name,
       ...calculationInputs,
     });

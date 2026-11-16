@@ -8,10 +8,15 @@
 apps/
   api/   Express API и схема Prisma
   web/   React-интерфейс на Vite
+  packages/contracts/   Общие Zod-схемы и TypeScript-типы API
 docker-compose.yaml   Локальная PostgreSQL
 ```
 
 Это monorepo на npm workspaces. PostgreSQL работает в Docker; Node.js запускает API и фронтенд на компьютере разработчика.
+
+Общий пакет импортируется по имени `@counterflow/contracts`. В `src/calculation.ts` описаны параметры и результат расчёта, в `src/variant.ts` — запрос создания варианта, сохранённая запись и ответы API. Формы со строковыми полями остаются в `apps/web/src/schemas` и переиспользуют числовые ограничения из контрактов.
+
+Команды `npm run dev` и `npm run build` сначала собирают контракты. После изменения общей схемы во время разработки выполните `npm run build -w @counterflow/contracts`; при необходимости перезапустите приложение. Проверки контрактов: `npm test -w @counterflow/contracts`. Сгенерированная папка `dist` в Git не сохраняется.
 
 ## Запуск на macOS
 

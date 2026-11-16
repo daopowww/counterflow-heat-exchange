@@ -38,16 +38,26 @@ export const TemperatureDifferenceChart = () => {
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="depth"
+              padding={{ left: 12, right: 12 }}
+              allowDecimals={false}
+              tickFormatter={(value) => value.toFixed(1)}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <YAxis
+              padding={{ top: 12 }}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={(label) => <label>Глубина {label}</label>}
+                  labelFormatter={(label) => (
+                    <label>Глубина {label.toFixed(1)}</label>
+                  )}
                 />
               }
             />
