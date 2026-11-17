@@ -1,11 +1,15 @@
 import { createBrowserRouter, redirect } from "react-router";
 import { CalculationPage } from "@/pages/calculation-page/CalculationPage";
 import { VariantsPage } from "@/pages/variants-page";
+import { LoginPage } from "@/pages/login-page";
 import { getStorageData } from "@/lib/utils.ts";
 import { calculationLocalStorage } from "@/schemas";
 import { useCalculationPoints } from "@/stores/calculationStore.ts";
 import { CalculationPageSkeleton } from "@/pages/calculation-page/CalculationPageSkeleton";
 import { useVariantStore } from "@/stores/variantStore.ts";
+import { RegisterPage } from "@/pages/register-page";
+import { RequireAuth } from "@/components/auth/RequireAuth";
+import { AuthLoading } from "@/components/auth/AuthLoading";
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +19,14 @@ export const router = createBrowserRouter([
   {
     path: "*",
     loader: () => redirect("/"),
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
   {
     path: "/calculate/:variantId?",
@@ -59,7 +71,11 @@ export const router = createBrowserRouter([
         return null;
       }
     },
-    hydrateFallbackElement: <div>загрузка данных</div>,
-    element: <VariantsPage />,
+    hydrateFallbackElement: <AuthLoading />,
+    element: (
+      <RequireAuth>
+        <VariantsPage />
+      </RequireAuth>
+    ),
   },
 ]);

@@ -9,6 +9,7 @@ interface Store {
 }
 
 interface Actions {
+  resetVariants: () => void;
   loadVariants: () => Promise<void>;
   setVariantError: (error: unknown) => void;
 }
@@ -17,6 +18,9 @@ export const useVariantStore = create<Store & Actions>()((set) => ({
   variants: [],
   status: "idle",
   error: null,
+  resetVariants: () => {
+    set({ variants: [], status: "idle", error: null });
+  },
   setVariantError: (error: unknown) => {
     set({
       error:

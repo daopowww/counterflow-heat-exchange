@@ -1,6 +1,9 @@
 import { NavLink } from "react-router";
+import { useAuthStore } from "@/stores/auth.ts";
 
 export const Sidebar = () => {
+  const user = useAuthStore((state) => state.user);
+
   return (
     <aside className="w-24 shrink-0">
       <nav className="sticky top-8 rounded-3xl bg-white px-2 py-5">
@@ -26,27 +29,29 @@ export const Sidebar = () => {
               <span>Расчет</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/variants"
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-2 rounded-2xl px-2 py-3 text-center text-xs transition-colors ${
-                  isActive
-                    ? "bg-stone-900 text-white"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
-                }`
-              }
-            >
-              <svg
-                className="fill-current w-6 h-6"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 640 640"
+          {user !== null && (
+            <li>
+              <NavLink
+                to="/variants"
+                className={({ isActive }) =>
+                  `flex flex-col items-center gap-2 rounded-2xl px-2 py-3 text-center text-xs transition-colors ${
+                    isActive
+                      ? "bg-stone-900 text-white"
+                      : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                  }`
+                }
               >
-                <path d="M128 464L512 464C520.8 464 528 456.8 528 448L528 208C528 199.2 520.8 192 512 192L362.7 192C345.4 192 328.5 186.4 314.7 176L276.3 147.2C273.5 145.1 270.2 144 266.7 144L128 144C119.2 144 112 151.2 112 160L112 448C112 456.8 119.2 464 128 464zM512 512L128 512C92.7 512 64 483.3 64 448L64 160C64 124.7 92.7 96 128 96L266.7 96C280.5 96 294 100.5 305.1 108.8L343.5 137.6C349 141.8 355.8 144 362.7 144L512 144C547.3 144 576 172.7 576 208L576 448C576 483.3 547.3 512 512 512z" />
-              </svg>
-              <span className="text-center">Мои варианты</span>
-            </NavLink>
-          </li>
+                <svg
+                  className="fill-current w-6 h-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 640"
+                >
+                  <path d="M128 464L512 464C520.8 464 528 456.8 528 448L528 208C528 199.2 520.8 192 512 192L362.7 192C345.4 192 328.5 186.4 314.7 176L276.3 147.2C273.5 145.1 270.2 144 266.7 144L128 144C119.2 144 112 151.2 112 160L112 448C112 456.8 119.2 464 128 464zM512 512L128 512C92.7 512 64 483.3 64 448L64 160C64 124.7 92.7 96 128 96L266.7 96C280.5 96 294 100.5 305.1 108.8L343.5 137.6C349 141.8 355.8 144 362.7 144L512 144C547.3 144 576 172.7 576 208L576 448C576 483.3 547.3 512 512 512z" />
+                </svg>
+                <span className="text-center">Мои варианты</span>
+              </NavLink>
+            </li>
+          )}
         </ul>
       </nav>
     </aside>

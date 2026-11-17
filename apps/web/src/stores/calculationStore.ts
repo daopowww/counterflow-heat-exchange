@@ -17,6 +17,7 @@ interface State {
 }
 
 interface Action {
+  resetCalculation: () => void;
   runCalculationPoints: (params: CalculationRequest) => Promise<void>;
   setCalculationInputs: (inputs: CalculationRequest) => void;
   setCalculationError: (error: unknown) => void;
@@ -29,6 +30,21 @@ export const useCalculationPoints = create<State & Action>()((set, get) => ({
   summary: null,
   calculationInputs: null,
   error: null,
+  resetCalculation: () => {
+    set({
+      calculationPoints: [],
+      status: "idle",
+      summary: null,
+      calculationInputs: null,
+      error: null,
+    });
+
+    try {
+      localStorage.removeItem("form-data");
+    } catch (error) {
+      console.error(error);
+    }
+  },
   loadSavedVariant: async (id: string) => {
     set({
       status: "loading",
